@@ -121,21 +121,21 @@ public class RubberbandTest extends PApplet {
 
 		ellipseMode(CENTER);
 
-//		//draw response curve
-//		drawTransFunction();
-//		if (Params.DATAON){		
-//			// draw specific strain gauge
-//			drawInform();
-//
-//			fill(0);
-//			textSize(20);
-//			text(curState, 50, 50);
-//			textSize(12);
-//		}
+		//draw response curve
+		drawTransFunction();
+		if (Params.DATAON){		
+			// draw specific strain gauge
+			drawInform();
 
-//		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
-		drawTargetImage(200, 200, 500);
+			fill(0);
+			textSize(20);
+			text(curState, 50, 50);
+			textSize(12);
+		}
+		
 		drawAllData(3*WIDTH/4, 0, WIDTH/4, HEIGHT/4);
+		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
+		drawTargetImage(200, 200, 500);
 
 		// ////////////////////////////////////////////////////////////////////////////////
 		// Write Data to File
@@ -549,7 +549,8 @@ public class RubberbandTest extends PApplet {
 		// reader header and curvature information from file
 		// ////////////////////////////////////////////////////////////////////////////////	
 		try {
-			reader = new BufferedReader(new FileReader("testData3.txt"));
+//			reader = new BufferedReader(new FileReader("testData1_3.txt"));
+			reader = new BufferedReader(new FileReader("testData2_1.txt"));
 			try {
 				String line;
 				line = reader.readLine();
@@ -607,15 +608,15 @@ public class RubberbandTest extends PApplet {
 		// ////////////////////////////////////////////////////////////////////////////////
 		// set calibrate LSF regression to each strain gauge
 		// ////////////////////////////////////////////////////////////////////////////////
-		int order = 2;
+		int order = 1;
 		for (int i = 0; i < Params.NUM_STRAIN_SENSORS; i++){
 			double[] input = calDataFromTest[i];
 			LeastSquareFit lsf = new LeastSquareFit(input, rawDataForCalCurvature, order);
 			ss[i].mapLSF = lsf;
 		}
-		double[] input = calDataFromTest[15];
-		LeastSquareFit lsf = new LeastSquareFit(input, rawDataForCalCurvature, 1);
-		ss[15].mapLSF = lsf;
+//		double[] input = calDataFromTest[15];
+//		LeastSquareFit lsf = new LeastSquareFit(input, rawDataForCalCurvature, 1);
+//		ss[15].mapLSF = lsf;
 	}
 
 
@@ -739,30 +740,41 @@ public class RubberbandTest extends PApplet {
 	private void drawCurrentShape(int x, int y, int w, int h){
 		strokeWeight(2);
 		stroke(0);
-		noFill();
+		fill(255);
 		rect(x, y, w, h);
 		int tmpShape = -1;
 		try {
-			//			tmpShape = svmp.classifyJarLib(model, rawRadiusVal);
 			tmpShape = svm_predict.classifyJarLib(model, rawRadiusVal);
 		} catch (IOException e1) { e1.printStackTrace(); }
 
 		if (tmpShape != curShape){
 			curShape = tmpShape;
-//			switch (curShape){
-//			case 1:
-//				curShapeImg = loadImage("square.jpg");
-//				break;
-//			case 2:
-//				curShapeImg = loadImage("tarImg.jpg");
-//				break;
-//			case 3:
-//				curShapeImg = loadImage("rectangle.jpg");
-//				break;
-//			default:
-//				curShapeImg = loadImage("no.png");
-//				break;
-//			}
+			switch (curShape){
+			case 5:
+				curShapeImg = loadImage("circle.png");
+				break;
+			case 6:
+				curShapeImg = loadImage("square.png");
+				break;
+			case 7:
+				curShapeImg = loadImage("triangle.png");
+				break;
+			case 8:
+				curShapeImg = loadImage("v_shape.png");
+				break;
+			case 9:
+				curShapeImg = loadImage("ok.png");
+				break;
+			case 10:
+				curShapeImg = loadImage("cap.png");
+				break;
+			case 11:
+				curShapeImg = loadImage("w_shape.png");
+				break;
+			default:
+				curShapeImg = loadImage("no.png");
+				break;
+			}
 		}
 		image(curShapeImg, x, y, w, h);
 		strokeWeight(1);
