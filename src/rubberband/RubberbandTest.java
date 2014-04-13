@@ -72,6 +72,10 @@ public class RubberbandTest extends PApplet {
 
 	private svm_predict svmp = null;
 	private svm_model model = null;
+	
+	private boolean toLoadImg = true;
+	private int targetShape = 4;
+	private PImage baseLine = null;
 
 	// ////////////////////////////////////////////////////////////////////////////////
 	// Processing event
@@ -129,7 +133,8 @@ public class RubberbandTest extends PApplet {
 //			textSize(12);
 //		}
 
-		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
+//		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
+		drawTargetImage(200, 200, 500);
 		drawAllData(3*WIDTH/4, 0, WIDTH/4, HEIGHT/4);
 
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -155,13 +160,14 @@ public class RubberbandTest extends PApplet {
 		// Translation
 		translate(WIDTH/4, HEIGHT*3/4);
 		translate(0, 0, -Params.ONE_STEP*3);
-		translate(dx, dy, dz);
+//		translate(dx, dy, dz);
+		translate(dx, dy, 0);
 
-		rotateY(-radians(yaw));
-		rotateX(-radians(pitch));
-		rotateZ(radians(roll));
-
-		rotateY(radians(-90));
+//		rotateY(-radians(yaw));
+//		rotateX(-radians(pitch));
+//		rotateZ(radians(roll));
+//
+//		rotateY(radians(-90));
 		
 		// ////////////////////////////////////////////////////////////////////////////////
 		// Simply Draw using openGL functions
@@ -412,6 +418,14 @@ public class RubberbandTest extends PApplet {
 			break;
 		case 'm':
 			dz = dz + Params.ONE_STEP;
+			break;
+		case 'd':
+			targetShape++;
+			toLoadImg = true;
+			break;
+		case 'a':
+			targetShape--;
+			toLoadImg = true;
 			break;
 		}
 
@@ -735,25 +749,63 @@ public class RubberbandTest extends PApplet {
 
 		if (tmpShape != curShape){
 			curShape = tmpShape;
-			switch (curShape){
-			case 1:
-				curShapeImg = loadImage("square.jpg");
-				break;
-			case 2:
-				curShapeImg = loadImage("tarImg.jpg");
-				break;
-			case 3:
-				curShapeImg = loadImage("rectangle.jpg");
-				break;
-			default:
-				curShapeImg = loadImage("no.jpg");
-				break;
-			}
+//			switch (curShape){
+//			case 1:
+//				curShapeImg = loadImage("square.jpg");
+//				break;
+//			case 2:
+//				curShapeImg = loadImage("tarImg.jpg");
+//				break;
+//			case 3:
+//				curShapeImg = loadImage("rectangle.jpg");
+//				break;
+//			default:
+//				curShapeImg = loadImage("no.png");
+//				break;
+//			}
 		}
 		image(curShapeImg, x, y, w, h);
 		strokeWeight(1);
 	}
 
+	private void drawTargetImage(int x, int y, int r){
+		pushMatrix();
+		translate(0, 0, -100);
+		
+		if (toLoadImg){
+			switch(targetShape){
+			case 5:
+				baseLine = loadImage("circle.png");
+				break;
+			case 6:
+				baseLine = loadImage("square.png");
+				break;
+			case 7:
+				baseLine = loadImage("triangle.png");
+				break;
+			case 8:
+				baseLine = loadImage("v_shape.png");
+				break;
+			case 9:
+				baseLine = loadImage("ok.png");
+				break;
+			case 10:
+				baseLine = loadImage("cap.png");
+				break;
+			case 11:
+				baseLine = loadImage("w_shape.png");
+				break;
+			default:
+				baseLine = loadImage("no.png");
+				break;
+			}
+		}
+		image(baseLine, x, y, r, r);
+		toLoadImg = false;
+		
+		popMatrix();
+	}
+	
 	// ////////////////////////////////////////////////////////////////////////////////
 	// Other function
 	// ////////////////////////////////////////////////////////////////////////////////

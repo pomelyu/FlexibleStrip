@@ -90,7 +90,7 @@ public class ArduinoIO {
 		          val[i] = (int)((serial.read() << 8) | (serial.read()));
 		        }
 		        
-//		        ((RubberbandTest) parent).motionEvent(readFloat(serial), readFloat(serial), readFloat(serial));
+		        ((RubberbandTest) parent).motionEvent(readFloat(serial), readFloat(serial), readFloat(serial));
 		      }
 		    }
 		}
