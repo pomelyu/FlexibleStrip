@@ -6,7 +6,7 @@ public class Params {
 	// for display
 	public static float DISPLAY_RATIO = 3.0f;
 	public static int WINDOW_HEIGHT = 720;
-	public static int WINDOW_WIDTH = 1280;
+	public static int WINDOW_WIDTH = 1240;
 	public static boolean DATAON = true;
 	public static int ONE_STEP = 20;
 	public static int STRIP_WIDTH = 50;

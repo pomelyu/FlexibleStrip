@@ -38,7 +38,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/Pomelyu/Documents/WorkSpace/rubberband/lib/user/java/javaGeom-0.11.2.jar"/>
-	<classpathentry kind="lib" path="/Users/Pomelyu/Documents/WorkSpace/rubberband/lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/user/java/javaGeom-0.11.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

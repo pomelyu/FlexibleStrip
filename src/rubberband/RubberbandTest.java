@@ -68,7 +68,7 @@ public class RubberbandTest extends PApplet {
 
 	// for shape recognition
 	private int curShape = -1;
-	private PImage curShapeImg = loadImage("data/no.jpg");
+	private PImage curShapeImg = null;
 
 	private svm_predict svmp = null;
 	private svm_model model = null;
@@ -129,7 +129,7 @@ public class RubberbandTest extends PApplet {
 //			textSize(12);
 //		}
 
-		drawCurrentShape(0, 0, 100, 100);
+		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
 		drawAllData(3*WIDTH/4, 0, WIDTH/4, HEIGHT/4);
 
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -153,10 +153,6 @@ public class RubberbandTest extends PApplet {
 			}
 		}
 		// Translation
-
-		// ////////////////////////////////////////////////////////////////////////////////
-		// Simply Draw using openGL functions
-		// ////////////////////////////////////////////////////////////////////////////////
 		translate(WIDTH/4, HEIGHT*3/4);
 		translate(0, 0, -Params.ONE_STEP*3);
 		translate(dx, dy, dz);
@@ -166,7 +162,10 @@ public class RubberbandTest extends PApplet {
 		rotateZ(radians(roll));
 
 		rotateY(radians(-90));
-
+		
+		// ////////////////////////////////////////////////////////////////////////////////
+		// Simply Draw using openGL functions
+		// ////////////////////////////////////////////////////////////////////////////////
 		pushMatrix();
 
 
