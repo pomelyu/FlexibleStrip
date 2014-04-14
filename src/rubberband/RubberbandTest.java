@@ -122,19 +122,19 @@ public class RubberbandTest extends PApplet {
 		ellipseMode(CENTER);
 
 		//draw response curve
-		drawTransFunction();
+//		drawTransFunction();
 		if (Params.DATAON){		
 			// draw specific strain gauge
-			drawInform();
+//			drawInform();
 
 			fill(0);
-			textSize(20);
-			text(curState, 50, 50);
+			textSize(10);
+			text(curState, 10, HEIGHT-10);
 			textSize(12);
 		}
 		
 		drawAllData(3*WIDTH/4, 0, WIDTH/4, HEIGHT/4);
-		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
+//		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
 		drawTargetImage(200, 200, 500);
 
 		// ////////////////////////////////////////////////////////////////////////////////
@@ -466,7 +466,7 @@ public class RubberbandTest extends PApplet {
 //		ss[rVal.length-1].setNextRadius(CHEAT * (float)rawRadiusVal[rVal.length-1]);
 		
 		// set by average in response curve
-		float magicNumber = 7.0f;
+		float magicNumber = Params.STRIP.gap_radius_fix;
 		for (int i = 0; i < rVal.length-1; i++){
 			double v1 = invLSF_Evaluate(1.0f/rawRadiusVal[i]);
 			double v2 = invLSF_Evaluate(1.0f/rawRadiusVal[i+1]);
@@ -549,8 +549,7 @@ public class RubberbandTest extends PApplet {
 		// reader header and curvature information from file
 		// ////////////////////////////////////////////////////////////////////////////////	
 		try {
-//			reader = new BufferedReader(new FileReader("testData1_3.txt"));
-			reader = new BufferedReader(new FileReader("testData2_1.txt"));
+			reader = new BufferedReader(new FileReader(Params.STRIP.calibration_data_set));
 			try {
 				String line;
 				line = reader.readLine();
@@ -608,15 +607,21 @@ public class RubberbandTest extends PApplet {
 		// ////////////////////////////////////////////////////////////////////////////////
 		// set calibrate LSF regression to each strain gauge
 		// ////////////////////////////////////////////////////////////////////////////////
-		int order = 1;
+		int[] gaugeInOrder1 = Params.STRIP.calibration_in_order_1;
+		int idx = 0;
 		for (int i = 0; i < Params.NUM_STRAIN_SENSORS; i++){
 			double[] input = calDataFromTest[i];
-			LeastSquareFit lsf = new LeastSquareFit(input, rawDataForCalCurvature, order);
+			LeastSquareFit lsf;
+			
+			if ( idx < gaugeInOrder1.length && i == gaugeInOrder1[idx]){
+				lsf = new LeastSquareFit(input, rawDataForCalCurvature, 1);
+				idx++;
+			}
+			else
+				lsf = new LeastSquareFit(input, rawDataForCalCurvature, 2);
+			
 			ss[i].mapLSF = lsf;
 		}
-//		double[] input = calDataFromTest[15];
-//		LeastSquareFit lsf = new LeastSquareFit(input, rawDataForCalCurvature, 1);
-//		ss[15].mapLSF = lsf;
 	}
 
 

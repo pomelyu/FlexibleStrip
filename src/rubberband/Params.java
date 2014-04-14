@@ -11,6 +11,23 @@ public class Params {
 	public static int ONE_STEP = 20;
 	public static int STRIP_WIDTH = 50;
 	
+	
+	// For each strip
+	private static StripInfo STRIP_WITHOUT_NINIJA = new StripInfo(
+			new int[]{14, 4, 9, 7, 11, 3, 12, 6, 13, 1, 10, 8, 15, 5, 0, 2}, 
+			7.0f, 
+			new int[]{15},
+			"testData1_3.txt");
+	
+	private static StripInfo STRIP_WITH_NINIJA = new StripInfo(
+			new int[]{4, 13, 5, 0, 1, 14, 3, 10, 2, 9, 7, 12, 8, 11, 6, 15}, 
+			7.0f, 
+			new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, 
+			"testData2_1.txt");
+	
+	// which strip
+	public static StripInfo STRIP = STRIP_WITHOUT_NINIJA;
+	
 	// for strain gauge parameter
 	public static float GAUGE_SPACING = 15 * DISPLAY_RATIO; // 15
 	public static float GAUGE_LENGTH = 4 * DISPLAY_RATIO;  // 4
@@ -48,5 +65,4 @@ public class Params {
 		int result = (alpha << 24) + (r << 16) + (g << 8) + b;
 		return result;
 	}
-	
 }

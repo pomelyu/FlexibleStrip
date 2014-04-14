@@ -20,8 +20,7 @@ public class ArduinoIO {
 	
 	private int[] val;      // Data received from the serial port
 	
-//	private static int[] mapping = new int[]{14, 4, 9, 7, 11, 3, 12, 6, 13, 1, 10, 8, 15, 5, 0, 2};
-	private static int[] mapping = new int[]{4, 13, 5, 0, 1, 14, 3, 10, 2, 9, 7, 12, 8, 11, 6, 15};
+	private static int[] mapping = Params.STRIP.strain_gauge_mapping;
 
 	private Method strainGaugeEventMethod;
 
