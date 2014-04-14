@@ -8,6 +8,7 @@ public class StripInfo {
 	public String strip_additional_info;
 	
 	public StripInfo(int[] mapping, float gap_magic, int[] order1, String data_set){
+		
 		strain_gauge_mapping = mapping;
 		gap_radius_fix = gap_magic;
 		calibration_in_order_1 = order1;

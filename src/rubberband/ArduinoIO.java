@@ -106,10 +106,10 @@ public class ArduinoIO {
 		((RubberbandTest) parent).touchSensorEvent(tsVal);
 		
 		
-		for(int i = 0; i < gsVal.length; i++) {
-			System.out.print(gsVal[i]+" ");
-		}
-		System.out.println();
+//		for(int i = 0; i < gsVal.length; i++) {
+//			System.out.print(gsVal[i]+" ");
+//		}
+//		System.out.println();
 		
 		
 		/*int wantSize = numOfStrainSensors + numOfTouchSensors;

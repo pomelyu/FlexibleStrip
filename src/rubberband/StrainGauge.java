@@ -29,7 +29,6 @@ public class StrainGauge {
 	
 	private static int DATA_WINDOW_SIZE = Params.DATA_WINDOW_SIZE;
 	private static int RADIUS_WINDOW_SIZE = Params.WINDOW_WIDTH;
-	private static boolean DATA_ON = Params.DATAON;
 
 	public StrainGauge(final PApplet pApplet, float gaugeLength) {
 		this.pApplet = pApplet;
@@ -41,14 +40,12 @@ public class StrainGauge {
 		dataWindow = new Vector<Double>();
 		for(int i = 0; i < DATA_WINDOW_SIZE; i++)
 			dataWindow.add((double) 0);
-		if (DATA_ON){
-			radiusWindow = new Vector<Float>();
-			for (int i = 0; i < RADIUS_WINDOW_SIZE; i++)
-				radiusWindow.add(0.0f);
-			rawWindow = new Vector<Float>();
-			for (int i = 0; i < RADIUS_WINDOW_SIZE; i++)
-				rawWindow.add(0.0f);
-		}
+		radiusWindow = new Vector<Float>();
+		for (int i = 0; i < RADIUS_WINDOW_SIZE; i++)
+			radiusWindow.add(0.0f);
+		rawWindow = new Vector<Float>();
+		for (int i = 0; i < RADIUS_WINDOW_SIZE; i++)
+			rawWindow.add(0.0f);
 	}
 	
 	public void update(double rVal){
@@ -59,10 +56,8 @@ public class StrainGauge {
 			for (int i = 0; i < DATA_WINDOW_SIZE; i++)
 				sum = sum + dataWindow.get(i);
 			value = sum / DATA_WINDOW_SIZE;
-			if (DATA_ON){
-				rawWindow.remove(0);
-				rawWindow.add((float)value);
-			}
+			rawWindow.remove(0);
+			rawWindow.add((float)value);
 		}
 		else
 			System.out.println("Err! dataWindow empty");
@@ -77,10 +72,8 @@ public class StrainGauge {
 
 	public void setCurvatureRadius(float radius) {
 		this.radius = radius;
-		if (DATA_ON){
-			radiusWindow.remove(0);
-			radiusWindow.add(radius);
-		}
+		radiusWindow.remove(0);
+		radiusWindow.add(radius);
 	}
 	
 	public void setNextRadius(float r){ nextRadius = r; }

@@ -7,14 +7,21 @@ public class Params {
 	public static float DISPLAY_RATIO = 3.0f;
 	public static int WINDOW_HEIGHT = 720;
 	public static int WINDOW_WIDTH = 1240;
-	public static boolean DATAON = true;
 	public static int ONE_STEP = 20;
 	public static int STRIP_WIDTH = 50;
 	
 	
+	// FLAG
+	// -- draw auxiliary circle and show curvature in strip
+	public static boolean DEBUG = true;
+	// -- enable closed form constraint
+	public static boolean DO_CLOSE_SHAPE = true;
+	// -- read data from file instead from arduino
+	public static boolean DATA_FROM_FILE = true;
+	
 	// For each strip
 	private static StripInfo STRIP_WITHOUT_NINIJA = new StripInfo(
-			new int[]{14, 4, 9, 7, 11, 3, 12, 6, 13, 1, 10, 8, 15, 5, 0, 2}, 
+			new int[]{14, 4, 9, 7, 11, 3, 12, 6, 13, 1, 10, 8, 15, 5, 0, 2},
 			7.0f, 
 			new int[]{15},
 			"testData1_3.txt");
@@ -35,10 +42,6 @@ public class Params {
 	// for display touch
 	public static int COLOR_TOUCH = color(0, 0, 255, 255);
 	public static int COLOR_UNTOUCH = color(255, 0, 0, 255);
-	
-	public static boolean DEBUG = true;
-	
-	public static boolean DO_CLOSE_SHAPE = true;
 	
 	// for number of sensor
 	public static int NUM_STRAIN_SENSORS = 16;

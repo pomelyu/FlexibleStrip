@@ -8,6 +8,9 @@ import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
 import libsvm.svm;
 import libsvm.svm_model;
 import math.geom2d.AffineTransform2D;
@@ -76,7 +79,10 @@ public class RubberbandTest extends PApplet {
 	private boolean toLoadImg = true;
 	private int targetShape = 4;
 	private PImage baseLine = null;
-
+	
+	// load saved raw data file
+	private String rawDataFile = null;
+	
 	// ////////////////////////////////////////////////////////////////////////////////
 	// Processing event
 	// ////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +113,12 @@ public class RubberbandTest extends PApplet {
 		{
 			model = svm.svm_load_model("train.libsvm.model");
 		} catch (IOException e) { e.printStackTrace(); }
-	}
+		
+		if (Params.DATA_FROM_FILE){
+			showFileChooser();
+			loadDataFromFile();
+		}
+	  }
 
 	public void update() {
 		if (arduinoDevices != null)
@@ -123,15 +134,12 @@ public class RubberbandTest extends PApplet {
 
 		//draw response curve
 //		drawTransFunction();
-		if (Params.DATAON){		
-			// draw specific strain gauge
-//			drawInform();
+		drawInform();
 
-			fill(0);
-			textSize(10);
-			text(curState, 10, HEIGHT-10);
-			textSize(12);
-		}
+		fill(0);
+		textSize(12);
+		text(curState, 10, HEIGHT-10);
+		textSize(12);
 		
 		drawAllData(3*WIDTH/4, 0, WIDTH/4, HEIGHT/4);
 //		drawCurrentShape(WIDTH-200, HEIGHT-200, 190, 190);
@@ -160,8 +168,7 @@ public class RubberbandTest extends PApplet {
 		// Translation
 		translate(WIDTH/4, HEIGHT*3/4);
 		translate(0, 0, -Params.ONE_STEP*3);
-//		translate(dx, dy, dz);
-		translate(dx, dy, 0);
+		translate(dx, dy, dz);
 
 //		rotateY(-radians(yaw));
 //		rotateX(-radians(pitch));
@@ -396,6 +403,7 @@ public class RubberbandTest extends PApplet {
 			} catch (IOException e){
 				e.printStackTrace();
 			}
+			writeFlatValueToFile();
 			break;
 		case 'z':
 			for (int i=0; i < Params.NUM_STRAIN_SENSORS; i++)
@@ -427,6 +435,12 @@ public class RubberbandTest extends PApplet {
 			targetShape--;
 			toLoadImg = true;
 			break;
+		case ',':
+			flatValue[sensorInterest]--;
+			break;
+		case '.':
+			flatValue[sensorInterest]++;
+			break;
 		}
 
 	}
@@ -449,11 +463,20 @@ public class RubberbandTest extends PApplet {
 //		for (int i = 0; i < rVal.length; i++)
 //			rawStrainVal[i] = rVal[i];
 
-		for	(int i = 0; i < rVal.length; i++){
-			ss[i].update(rVal[i]);
-			rawStrainVal[i] = ss[i].getCurrentValue();
-			rawRadiusVal[i] = getCurveRadius(i, ss[i].getCurrentValue());
-			ss[i].setCurvatureRadius((float) rawRadiusVal[i]);
+		if (Params.DATA_FROM_FILE){
+			for	(int i = 0; i < rVal.length; i++){
+				ss[i].update(rawStrainVal[i]);
+				rawRadiusVal[i] = getCurveRadius(i, ss[i].getCurrentValue());
+				ss[i].setCurvatureRadius((float) rawRadiusVal[i]);
+			}
+		}
+		else{
+			for	(int i = 0; i < rVal.length; i++){
+				ss[i].update(rVal[i]);
+				rawStrainVal[i] = ss[i].getCurrentValue();
+				rawRadiusVal[i] = getCurveRadius(i, ss[i].getCurrentValue());
+				ss[i].setCurvatureRadius((float) rawRadiusVal[i]);
+			}
 		}
 		// FIXME add rational radius on gap region
 		
@@ -823,6 +846,29 @@ public class RubberbandTest extends PApplet {
 		popMatrix();
 	}
 	
+	
+	private void showFileChooser(){
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("."));
+
+		chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+			public boolean accept(File f) {
+				return (f.getName().toLowerCase().endsWith(".txt") || f.isDirectory());
+			}
+
+			public String getDescription() {
+				return "(*,TXT) Raw data File";
+			}
+		});
+
+		int r = chooser.showOpenDialog(new JFrame());
+		if (r == JFileChooser.APPROVE_OPTION) {
+			rawDataFile = chooser.getSelectedFile().getAbsolutePath();
+			System.out.println(rawDataFile);
+		}
+	}
+	
+	
 	// ////////////////////////////////////////////////////////////////////////////////
 	// Other function
 	// ////////////////////////////////////////////////////////////////////////////////
@@ -838,7 +884,19 @@ public class RubberbandTest extends PApplet {
 			} catch (IOException e) { e.printStackTrace(); }
 		} else { System.out.println("output file not create"); }
 	}
-
+	
+	private void writeFlatValueToFile(){
+		if (outFile != null){
+			try {
+				for (int i = 0; i < ss.length; i++){
+					writer.write( Double.toString( flatValue[i]) );
+					writer.write( " " );
+				}
+				writer.write( "\n" );
+			} catch (IOException e) { e.printStackTrace(); }
+		} else { System.out.println("output file not create"); }
+	}
+	
 	public double getCurveRadius(int idx, double strainValue) {
 		double mappedValue;
 		if (idx == -1){
@@ -867,5 +925,39 @@ public class RubberbandTest extends PApplet {
 				r = 1.0/LSF_N.evaluate( mappedValue );
 			return r;
 		}
+	}
+	
+	
+	private void loadDataFromFile(){
+		double[] sum = new double[Params.NUM_STRAIN_SENSORS];
+		int count = 0;
+		try {
+			reader = new BufferedReader(new FileReader(rawDataFile));
+			try {
+				String line;
+				
+				// read flat value from first line of file
+				if ( (line = reader.readLine()) != null ){
+					String[] inStrArr = line.split(" ");
+					for (int i = 0; i < Params.NUM_STRAIN_SENSORS; i++){
+						flatValue[i] = Double.parseDouble(inStrArr[i]);
+					}
+				}
+				
+				// read remaining data and get average
+				while( (line = reader.readLine()) != null){
+					String[] inStrArr = line.split(" ");
+					for (int i = 0; i < Params.NUM_STRAIN_SENSORS; i++){
+						sum[i] = sum[i] + Double.parseDouble(inStrArr[i]);
+					}
+					count++;
+				}
+			} catch (IOException e) { e.printStackTrace(); }
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
+		
+		for (int i = 0; i < Params.NUM_STRAIN_SENSORS; i++)
+			sum[i] = sum[i] / count;
+		
+		rawStrainVal = sum;
 	}
 }
